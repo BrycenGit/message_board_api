@@ -1,6 +1,8 @@
 class MessagesController < ApplicationController
   def index
-    @messages = Message.all
+    author = params[:author]
+
+    @messages = Message.search(author)
     json_response(@messages)
   end
 
@@ -11,17 +13,25 @@ class MessagesController < ApplicationController
 
   def create
     @message = Message.create!(message_params)
-    json_response(@message)
+    json_response(@message, :created)
   end
 
   def update
     @message = Message.find(params[:id])
-    @message.update(message_params)
+    if @message.update!(message_params)
+      render status: 200, json: {
+        message: "this message has been succesfully updated."
+      }
+    end
   end
 
   def destroy
     @message = Message.find(params[:id])
-    @message.destroy
+    if @message.destroy
+      render staus: 200, json: {
+        message: "successfully deleted"
+      }
+    end
   end
 
   private
