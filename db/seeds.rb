@@ -5,3 +5,22 @@
 #
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
+class Seed
+
+  def self.begin
+    seed = Seed.new
+    seed.generate_messages
+  end
+
+  def generate_messages
+    20.times do |i|
+      message = Message.create!(
+        author: Faker::FunnyName.three_word_name,
+        content: Faker::TvShows::MichaelScott.quote
+      )
+      puts "Message #{i}: Author is #{message.author} and quotation is '#{message.content}'."
+    end
+  end
+end
+
+Seed.begin
