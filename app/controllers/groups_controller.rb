@@ -1,19 +1,15 @@
 class GroupsController < ApplicationController
+
+  before_action :restrict_access
+  # before_action :authenticate_user_from_token!
   def index
-    if params[:name]
-      @groups = Group.search(params[:name])
-    else
-      @groups = Group.all
-    end
+    @groups = Group.all
     json_response(@groups)
   end
 
   def show
     @group = Group.find(params[:id])
     json_response(@group)
-
-
-    
   end
 
   def create
@@ -44,7 +40,14 @@ class GroupsController < ApplicationController
     #   render json: object, status: status
     # end
 
+
     def group_params
       params.permit(:name)
     end
+
+    # def requires_login
+    #   unless current_user
+    #     render json: { errors: "This requires login" }
+    #   end
+    # end
 end

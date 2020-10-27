@@ -1,4 +1,6 @@
 class MessagesController < ApplicationController
+
+  before_action :restrict_access
   def index
     if params[:date1] && params[:date2]
       @messages = Message.date_search(params[:date1], params[:date2])
