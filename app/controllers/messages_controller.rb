@@ -1,8 +1,15 @@
 class MessagesController < ApplicationController
   def index
-    author = params[:author]
-
-    @messages = Message.search(author)
+    if params[:date1] && params[:date2]
+      @messages = Message.date_search(params[:date1], params[:date2])
+    elsif params[:group_id]
+    # author = params[:author]
+    # @messages = Message.search(author)
+      @group = Group.find(params[:group_id])
+      @messages = @group.messages
+    else
+      @messages = Message.all
+    end
     json_response(@messages)
   end
 
@@ -12,7 +19,8 @@ class MessagesController < ApplicationController
   end
 
   def create
-    @message = Message.create!(message_params)
+    @group = Group.find(params[:group_id])
+    @message = @group.messages.create!(message_params)
     json_response(@message, :created)
   end
 
@@ -26,11 +34,26 @@ class MessagesController < ApplicationController
   end
 
   def destroy
-    @message = Message.find(params[:id])
-    if @message.destroy
-      render staus: 200, json: {
-        message: "successfully deleted"
-      }
+    if params[:user]
+      @message = Message.find(params[:id])
+      if params[:user] == @message.author
+        if @message.destroy
+          render status: 200, json: {
+            message: "successfully deleted"
+          }
+        end
+      else
+        render status: 200, json: {
+          message: "you can only delete your messages"
+        }
+      end
+    else
+      # @message = Message.find(params[:id])
+      # if @message.destroy
+        render staus: 200, json: {
+          message: "sign in as user"
+        }
+      # end
     end
   end
 

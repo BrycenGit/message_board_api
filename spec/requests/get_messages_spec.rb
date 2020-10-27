@@ -1,12 +1,20 @@
 require "rails_helper"
 
 describe "get all messages route", :type => :request do
-  let!(:messages) {FactoryBot.create_list(:message, 20)}
+  # group = FactoryBot.build(:group_with_messages)
+  let!(:group) { FactoryBot.create(:group_with_messages)}
+  
 
-  before { get "/messages" }
 
-  it "returns all messages" do
-    expect(JSON.parse(response.body).size).to eq(20)
+
+  before { get "/groups/#{group.id}/messages" }
+
+  after { Group.destroy_all }
+
+  it "returns one group" do
+  #  binding.pry
+    expect(JSON.parse(response.body).size).to eq(5)
+   
   end
 
   it 'returns status code 200' do

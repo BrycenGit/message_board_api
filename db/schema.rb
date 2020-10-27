@@ -10,14 +10,22 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_10_26_182827) do
+ActiveRecord::Schema.define(version: 2020_10_27_174324) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
+  create_table "groups", force: :cascade do |t|
+    t.string "name"
+  end
+
   create_table "messages", force: :cascade do |t|
     t.string "content"
     t.string "author"
+    t.integer "group_id"
+    t.string "created_at"
+    t.string "updated_at"
   end
 
+  add_foreign_key "messages", "groups"
 end
